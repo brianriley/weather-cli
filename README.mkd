@@ -1,0 +1,16 @@
+A simple command-line tool for getting the current weather.
+
+Usage
+-----
+
+    $ weather 90210
+    It's 64 degrees and clear
+
+The `weather` command returns the current weather for a given zip code.
+
+Install
+-------
+
+    $ pip install weather-cli
+
+(Note that the command is `weather`, not `weather-cli`.)
