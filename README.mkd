@@ -11,6 +11,6 @@ The `weather` command returns the current weather for a given zip code.
 Install
 -------
 
-    $ pip install weather-cli
+    $ pip install weathercli
 
-(Note that the command is `weather`, not `weather-cli`.)
+(Note that the command is `weather`, not `weathercli`.)
