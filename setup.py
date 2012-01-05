@@ -15,7 +15,7 @@ setup(
     url='https://github.com/brianriley/weather-cli',
     packages=find_packages(),
     long_description=read('README.mkd'),
-    install_requires=['clint'],
+    install_requires=['clint==0.2.6'],
     test_suite='tests',
     entry_points={
         'console_scripts': [
