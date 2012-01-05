@@ -1,5 +1,5 @@
+from distutils.core import setup
 import os
-from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -13,15 +13,10 @@ setup(
     author_email='brian@btriley.com',
     description="A command line weather tool",
     url='https://github.com/brianriley/weather-cli',
-    packages=find_packages(),
+    py_modules=['weathercli'],
     long_description=read('README.mkd'),
     install_requires=['clint==0.2.6'],
-    test_suite='tests',
-    entry_points={
-        'console_scripts': [
-            'weather = weathercli.main:main',
-        ]
-    },
+    scripts=['bin/weather'],
     classifiers=[
         'Environment :: Console',
         'License :: OSI Approved :: BSD License',
