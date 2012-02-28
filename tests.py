@@ -1,6 +1,6 @@
 import unittest
 
-from weathercli import main as weather
+import weathercli as weather
 
 
 class FakeURLOpen(object):
