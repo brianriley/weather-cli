@@ -61,6 +61,7 @@ class BadXMLTestCase(unittest.TestCase):
         weather.urllib.urlopen = BadXMLResponse
         self.assertRaises(weather.WeatherDataError, self.weather.now, 'foobar')
 
+
 class ElementsNotFoundTestCase(unittest.TestCase):
     
     def setUp(self):
