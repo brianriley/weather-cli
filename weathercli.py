@@ -51,7 +51,6 @@ def get_temp_color(conditions):
     return 'white'
     
 
-
 def main():
     parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")
     parser.add_argument('zipcode', metavar='zipcode', help="A postal code to find weather for")
