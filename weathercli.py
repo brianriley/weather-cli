@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import argparse
 import json
+import os
 import re
 import sys
 import urllib
@@ -50,13 +51,18 @@ def get_temp_color(conditions):
 
 def main():
     parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")
-    parser.add_argument('query', metavar='query', help="A location query string to find weather for")
+    parser.add_argument('query', metavar='query', nargs="?", help="A location query string to find weather for")
 
     args = parser.parse_args()
     weather = Weather()
+
+    query = os.environ.get('WEATHER', args.query)
+    if not query:
+        parser.print_help()
+        sys.exit(1)
     
     try:
-        conditions = weather.now(args.query)
+        conditions = weather.now(query)
     except WeatherDataError as e:
         print >> sys.stderr, "ERROR: {0}".format(e.message)
         sys.exit(1)

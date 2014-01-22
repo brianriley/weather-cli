@@ -3,13 +3,24 @@ You've spent hours, days, months, maybe **years** customizing your terminal. And
 GONE are the days of wasting non-terminal moments looking up the current weather! Now, ask your terminal:
 
     $ weather portland,me
-    It's 9 degrees and light snow
+    It's 6° and light snow
 
-Thank you terminal--I think I *will* spend more time inside with you.
+Thank you, terminal--I think I *will* spend more time inside with you.
+
+BUT WAIT, THERE'S MOAR!!
+
+You can now set your location as an environment variable `WEATHER` and never have to type that query again!
+
+    $ export WEATHER=portland,me && weather
+    It's 6° and light snow
+    $ weather
+    It's 6° and light snow
 
 Install
 -------
 
+Installation couldn't be easier:
+
     $ pip install weathercli
 
-(Note that the command is `weather`, not `weathercli`.)
+(This is, of course, after you've run `easy_install pip` and `pip install --upgrade pip`. Simple!)
