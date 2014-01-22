@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import unittest
 
 import weathercli as weather
@@ -35,11 +37,11 @@ class PostalCodeTestCase(unittest.TestCase):
 
     def test_postal_code_90210(self):
         weather.urllib.urlopen = BeverlyHillsResponse
-        self.assertEquals(self.weather.now('90210'), "It's 65 degrees and broken clouds")
+        self.assertEquals(self.weather.now('90210'), u"It's 65\u00B0 and broken clouds")
 
     def test_postal_code_02150(self):
         weather.urllib.urlopen = ChelseaResponse
-        self.assertEquals(self.weather.now('02150'), "It's 35 degrees and sky is clear")
+        self.assertEquals(self.weather.now('02150'), u"It's 35\u00B0 and sky is clear")
 
 
 class MalformedResponseTestCase(unittest.TestCase):

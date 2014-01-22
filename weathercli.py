@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import argparse
 import json
 import re
@@ -26,7 +28,7 @@ class Weather(object):
         except KeyError:
             raise WeatherDataError("No conditions reported for your search")
 
-        return "It's {0} degrees and {1}".format(temperature, condition.lower())
+        return u"It's {0}\u00B0 and {1}".format(temperature, condition.lower())
 
 
 def get_temp_color(conditions):
