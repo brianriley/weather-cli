@@ -1,12 +1,11 @@
-A simple command-line tool for getting the current weather.
+You've spent hours, days, months, maybe **years** customizing your terminal. And yet so many things draw your attention away from it.
 
-Usage
------
+GONE are the days of wasting non-terminal moments looking up the current weather! Now, ask your terminal:
 
-    $ weather 90210
-    It's 64 degrees and clear
+    $ weather portland,me
+    It's 9 degrees and light snow
 
-The `weather` command returns the current weather for a given zip code.
+Thank you terminal--I think I *will* spend more time inside with you.
 
 Install
 -------
