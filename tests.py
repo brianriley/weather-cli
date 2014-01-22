@@ -10,32 +10,22 @@ class FakeURLOpen(object):
 
 class BeverlyHillsResponse(FakeURLOpen):
     def read(self):
-        return '<?xml version="1.0"?><xml_api_reply version="1"><weather module_id="0" tab_id="0" mobile_row="0" mobile_zipped="1" row="0" section="0" ><forecast_information><city data="Beverly Hills, CA"/><postal_code data="90210"/><latitude_e6 data=""/><longitude_e6 data=""/><forecast_date data="2011-12-27"/><current_date_time data="2011-12-28 05:51:00 +0000"/><unit_system data="US"/></forecast_information><current_conditions><condition data="Clear"/><temp_f data="48"/><temp_c data="9"/><humidity data="Humidity: 63%"/><icon data="/ig/images/weather/sunny.gif"/><wind_condition data="Wind: N at 0 mph"/></current_conditions><forecast_conditions><day_of_week data="Tue"/><low data="43"/><high data="68"/><icon data="/ig/images/weather/sunny.gif"/><condition data="Clear"/></forecast_conditions><forecast_conditions><day_of_week data="Wed"/><low data="50"/><high data="74"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions><forecast_conditions><day_of_week data="Thu"/><low data="52"/><high data="74"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions><forecast_conditions><day_of_week data="Fri"/><low data="50"/><high data="72"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions></weather></xml_api_reply>'
+        return '{"coord":{"lon":-118.41,"lat":34.1},"sys":{"message":0.1914,"country":"United States of America","sunrise":1390402573,"sunset":1390439679},"weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04n"}],"base":"gdps stations","main":{"temp":65.16,"humidity":30,"pressure":1018,"temp_min":53.6,"temp_max":72},"wind":{"speed":1.75,"deg":24.5007},"clouds":{"all":76},"dt":1390361961,"id":5328041,"name":"Beverly Hills","cod":200}'
 
 
 class ChelseaResponse(FakeURLOpen):
     def read(self):
-        return '<?xml version="1.0"?><xml_api_reply version="1"><weather module_id="0" tab_id="0" mobile_row="0" mobile_zipped="1" row="0" section="0" ><forecast_information><city data="Chelsea, MA"/><postal_code data="02150"/><latitude_e6 data=""/><longitude_e6 data=""/><forecast_date data="2011-12-28"/><current_date_time data="2011-12-28 05:54:00 +0000"/><unit_system data="US"/></forecast_information><current_conditions><condition data="Light rain"/><temp_f data="56"/><temp_c data="13"/><humidity data="Humidity: 90%"/><icon data="/ig/images/weather/mist.gif"/><wind_condition data="Wind: S at 21 mph"/></current_conditions><forecast_conditions><day_of_week data="Wed"/><low data="20"/><high data="47"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions><forecast_conditions><day_of_week data="Thu"/><low data="29"/><high data="36"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions><forecast_conditions><day_of_week data="Fri"/><low data="31"/><high data="47"/><icon data="/ig/images/weather/chance_of_snow.gif"/><condition data="Chance of Snow Showers"/></forecast_conditions><forecast_conditions><day_of_week data="Sat"/><low data="29"/><high data="40"/><icon data="/ig/images/weather/chance_of_rain.gif"/><condition data="Chance of Showers"/></forecast_conditions></weather></xml_api_reply>'
+        return '{"coord":{"lon":3.96,"lat":49.57},"sys":{"message":0.0964,"country":"France","sunrise":1390375685,"sunset":1390407819},"weather":[{"id":800,"main":"Clear","description":"sky is clear","icon":"02n"}],"base":"gdps stations","main":{"temp":35.56,"temp_min":35.56,"temp_max":35.56,"pressure":1007.62,"sea_level":1023.84,"grnd_level":1007.62,"humidity":96},"wind":{"speed":9.31,"deg":162.001},"clouds":{"all":8},"dt":1390362722,"id":3007477,"name":"Sissonne","cod":200}'
 
 
-class BadXMLResponse(FakeURLOpen):
+class BadResponse(FakeURLOpen):
     def read(self):
-        return 'abcdefg'
+        return '['
 
 
 class LocationNotFoundResponse(FakeURLOpen):
     def read(self):
-        return '<?xml version="1.0"?><xml_api_reply version="1"><weather module_id="0" tab_id="0" mobile_row="0" mobile_zipped="1" row="0" section="0" ><problem_cause data=""/></weather></xml_api_reply>'
-
-
-class TempFNotFoundResponse(FakeURLOpen):
-    def read(self):
-        return '<?xml version="1.0"?><xml_api_reply version="1"><weather module_id="0" tab_id="0" mobile_row="0" mobile_zipped="1" row="0" section="0" ><forecast_information><city data="Chelsea, MA"/><postal_code data="02150"/><latitude_e6 data=""/><longitude_e6 data=""/><forecast_date data="2011-12-28"/><current_date_time data="2011-12-28 05:54:00 +0000"/><unit_system data="US"/></forecast_information><current_conditions><condition data="Light rain"/><temp_c data="13"/><humidity data="Humidity: 90%"/><icon data="/ig/images/weather/mist.gif"/><wind_condition data="Wind: S at 21 mph"/></current_conditions><forecast_conditions><day_of_week data="Wed"/><low data="20"/><high data="47"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions><forecast_conditions><day_of_week data="Thu"/><low data="29"/><high data="36"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions><forecast_conditions><day_of_week data="Fri"/><low data="31"/><high data="47"/><icon data="/ig/images/weather/chance_of_snow.gif"/><condition data="Chance of Snow Showers"/></forecast_conditions><forecast_conditions><day_of_week data="Sat"/><low data="29"/><high data="40"/><icon data="/ig/images/weather/chance_of_rain.gif"/><condition data="Chance of Showers"/></forecast_conditions></weather></xml_api_reply>'
-
-
-class ConditionNotFoundResponse(FakeURLOpen):
-    def read(self):
-        return '<?xml version="1.0"?><xml_api_reply version="1"><weather module_id="0" tab_id="0" mobile_row="0" mobile_zipped="1" row="0" section="0" ><forecast_information><city data="Chelsea, MA"/><postal_code data="02150"/><latitude_e6 data=""/><longitude_e6 data=""/><forecast_date data="2011-12-28"/><current_date_time data="2011-12-28 05:54:00 +0000"/><unit_system data="US"/></forecast_information><current_conditions><temp_f data="56"/><temp_c data="13"/><humidity data="Humidity: 90%"/><icon data="/ig/images/weather/mist.gif"/><wind_condition data="Wind: S at 21 mph"/></current_conditions><forecast_conditions><day_of_week data="Wed"/><low data="20"/><high data="47"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions><forecast_conditions><day_of_week data="Thu"/><low data="29"/><high data="36"/><icon data="/ig/images/weather/mostly_sunny.gif"/><condition data="Mostly Sunny"/></forecast_conditions><forecast_conditions><day_of_week data="Fri"/><low data="31"/><high data="47"/><icon data="/ig/images/weather/chance_of_snow.gif"/><condition data="Chance of Snow Showers"/></forecast_conditions><forecast_conditions><day_of_week data="Sat"/><low data="29"/><high data="40"/><icon data="/ig/images/weather/chance_of_rain.gif"/><condition data="Chance of Showers"/></forecast_conditions></weather></xml_api_reply>'
+        return '{"message":"Error: Not found city","cod":"404"}'
 
 
 class PostalCodeTestCase(unittest.TestCase):
@@ -45,20 +35,20 @@ class PostalCodeTestCase(unittest.TestCase):
 
     def test_postal_code_90210(self):
         weather.urllib.urlopen = BeverlyHillsResponse
-        self.assertEquals(self.weather.now('90210'), "It's 48 degrees and clear")
+        self.assertEquals(self.weather.now('90210'), "It's 65 degrees and broken clouds")
 
     def test_postal_code_02150(self):
         weather.urllib.urlopen = ChelseaResponse
-        self.assertEquals(self.weather.now('02150'), "It's 56 degrees and light rain")
+        self.assertEquals(self.weather.now('02150'), "It's 35 degrees and sky is clear")
 
 
-class BadXMLTestCase(unittest.TestCase):
+class MalformedResponseTestCase(unittest.TestCase):
     
     def setUp(self):
         self.weather = weather.Weather()
 
     def test_bad_xml_response(self):
-        weather.urllib.urlopen = BadXMLResponse
+        weather.urllib.urlopen = BadResponse
         self.assertRaises(weather.WeatherDataError, self.weather.now, 'foobar')
 
 
@@ -70,14 +60,6 @@ class ElementsNotFoundTestCase(unittest.TestCase):
     def test_missing_current_conditions(self):
         weather.urllib.urlopen = LocationNotFoundResponse
         self.assertRaises(weather.WeatherDataError, self.weather.now, 'there is no here here')
-
-    def test_missing_temp_f(self):
-        weather.urllib.urlopen = TempFNotFoundResponse
-        self.assertRaises(weather.WeatherDataError, self.weather.now, '1234')
-
-    def test_missing_condition(self):
-        weather.urllib.urlopen = ConditionNotFoundResponse
-        self.assertRaises(weather.WeatherDataError, self.weather.now, '1234')
 
 
 class GetTempColorTestCase(unittest.TestCase):

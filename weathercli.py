@@ -1,9 +1,8 @@
 import argparse
+import json
 import re
 import sys
 import urllib
-import xml.dom.minidom
-from xml.parsers.expat import ExpatError
 
 from clint.textui import puts, colored
 
@@ -14,24 +13,20 @@ class WeatherDataError(Exception):
 
 class Weather(object):
     def now(self, query):
-        raw_xml = urllib.urlopen('http://www.google.com/ig/api?weather={0}'.format(urllib.quote_plus(query))).read()
+        raw_data = urllib.urlopen('http://api.openweathermap.org/data/2.5/weather?q={0}&units=imperial'.format(urllib.quote_plus(query))).read()
         
         try:
-            dom = xml.dom.minidom.parseString(raw_xml)
-        except ExpatError:
+            weather = json.loads(raw_data)
+        except ValueError:
             raise WeatherDataError("Malformed response from weather service")
 
-        current_conditions = self.get_element_from_dom(dom, 'current_conditions')
-        temperature = self.get_element_from_dom(current_conditions, 'temp_f')
-        condition = self.get_element_from_dom(current_conditions, 'condition')
-
-        return "It's {0} degrees and {1}".format(temperature.getAttribute('data'), condition.getAttribute('data').lower())
-
-    def get_element_from_dom(self, dom, element_name):
         try:
-            return dom.getElementsByTagName(element_name)[0]
-        except IndexError:
+            temperature = int(weather['main']['temp'])
+            condition = weather['weather'][0]['description']
+        except KeyError:
             raise WeatherDataError("No conditions reported for your search")
+
+        return "It's {0} degrees and {1}".format(temperature, condition.lower())
 
 
 def get_temp_color(conditions):
@@ -53,13 +48,13 @@ def get_temp_color(conditions):
 
 def main():
     parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")
-    parser.add_argument('zipcode', metavar='zipcode', help="A postal code to find weather for")
+    parser.add_argument('query', metavar='query', help="A location query string to find weather for")
 
     args = parser.parse_args()
     weather = Weather()
     
     try:
-        conditions = weather.now(args.zipcode)
+        conditions = weather.now(args.query)
     except WeatherDataError as e:
         print >> sys.stderr, "ERROR: {0}".format(e.message)
         sys.exit(1)
