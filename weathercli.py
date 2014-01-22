@@ -56,7 +56,7 @@ def main():
     args = parser.parse_args()
     weather = Weather()
 
-    query = os.environ.get('WEATHER', args.query)
+    query = args.query or os.environ.get('WEATHER')
     if not query:
         parser.print_help()
         sys.exit(1)
