@@ -16,6 +16,11 @@ You can now set your location as an environment variable `WEATHER` and never hav
     $ weather
     It's 6° and light snow
 
+The query you pass in will override the environment variable, though, so you can still check how people in less-fortunate climates are faring:
+
+    $ export WEATHER=portland,me && weather "los angeles,ca"
+    It's 76° and sunny
+
 Install
 -------
 
