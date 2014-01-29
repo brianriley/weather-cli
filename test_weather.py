@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json
-import unittest
 
 import mock
+import pytest
 
 import weathercli
 
 weather = weathercli.Weather()
 
 
-class WeatherTestCase(unittest.TestCase):
+class DescribeWeather:
 
-    def test_it_passes_query_to_url(self):
+    def it_passes_query_to_url(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
             mock_urlopen.return_value.read.return_value = json.dumps({
                 'main': {
@@ -29,7 +29,7 @@ class WeatherTestCase(unittest.TestCase):
 
             mock_urlopen.assert_called_with('http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=imperial')
 
-    def test_it_passes_units_along_to_query(self):
+    def it_passes_units_along_to_query(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
             mock_urlopen.return_value.read.return_value = json.dumps({
                 'main': {
@@ -46,25 +46,25 @@ class WeatherTestCase(unittest.TestCase):
 
             mock_urlopen.assert_called_with('http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=metric')
 
-    def test_it_raises_an_error_when_given_a_bad_response(self):
+    def it_raises_an_error_when_given_a_bad_response(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
             mock_urlopen.return_value.read.return_value = '{'
 
-            with self.assertRaises(weathercli.WeatherDataError) as cm:
+            with pytest.raises(weathercli.WeatherDataError) as cm:
                 weather.now('chelsea,ma')
 
-            self.assertEquals(cm.exception.message, "Malformed response from weather service")
+            assert cm.value.message == "Malformed response from weather service"
 
-    def test_it_raises_an_error_when_elements_arent_found(self):
+    def it_raises_an_error_when_elements_arent_found(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
             mock_urlopen.return_value.read.return_value = '{}'
 
-            with self.assertRaises(weathercli.WeatherDataError) as cm:
+            with pytest.raises(weathercli.WeatherDataError) as cm:
                 weather.now('chelsea,ma')
 
-            self.assertEquals(cm.exception.message, "No conditions reported for your search")
+            assert cm.value.message == "No conditions reported for your search"
 
-    def test_it_returns_the_weather_conditions(self):
+    def it_returns_the_weather_conditions(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
             mock_urlopen.return_value.read.return_value = json.dumps({
                 'main': {
@@ -77,23 +77,19 @@ class WeatherTestCase(unittest.TestCase):
                 ],
             })
 
-            self.assertEquals(weather.now('chelsea,ma'), u"It's 35\u00B0 and sky is clear")
+            assert weather.now('chelsea,ma') == u"It's 35\u00B0 and sky is clear"
 
 
-class GetTempColorTestCase(unittest.TestCase):
+class DescribeGetTempColor:
     
-    def test_temp_is_blue(self):
-        self.assertEquals(weathercli.get_temp_color("It's 45 degrees and snowing"), 'blue')
+    def it_is_blue_when_cold(self):
+        assert weathercli.get_temp_color("It's 45 degrees and snowing") == 'blue'
 
-    def test_temp_is_yellow(self):
-        self.assertEquals(weathercli.get_temp_color("It's 70 degrees and sunny"), 'yellow')
+    def it_is_yellow_when_warm(self):
+        assert weathercli.get_temp_color("It's 70 degrees and sunny") == 'yellow'
 
-    def test_temp_is_magenta(self):
-        self.assertEquals(weathercli.get_temp_color("It's 100 degrees and sunny"), 'red')
+    def it_is_magenta_when_hot(self):
+        assert weathercli.get_temp_color("It's 100 degrees and sunny") == 'red'
 
-    def test_minus_10(self):
-        self.assertEquals(weathercli.get_temp_color("It's -10 degrees and snowing"), 'cyan')
-
-
-if __name__ == '__main__':
-    unittest.main()
+    def it_is_cyan_when_very_cold(self):
+        assert weathercli.get_temp_color("It's -10 degrees and snowing") == 'cyan'
