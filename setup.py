@@ -8,14 +8,14 @@ def read(fname):
 
 setup(
     name='weathercli',
-    version='2.1.0',
+    version='2.1.1',
     author='Brian Riley',
     author_email='brian@btriley.com',
     description="A command line weather tool",
     url='https://github.com/brianriley/weather-cli',
     py_modules=['weathercli'],
     long_description=read('README.mkd'),
-    install_requires=['clint==0.2.6'],
+    install_requires=['clint==0.3.4'],
     scripts=['bin/weather'],
     classifiers=[
         'Environment :: Console',
