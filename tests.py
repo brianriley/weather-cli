@@ -29,6 +29,23 @@ class WeatherTestCase(unittest.TestCase):
 
             mock_urlopen.assert_called_with('http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=imperial')
 
+    def test_it_passes_units_along_to_query(self):
+        with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
+            mock_urlopen.return_value.read.return_value = json.dumps({
+                'main': {
+                    'temp': 1
+                },
+                'weather': [
+                    {
+                        'description': 'abc'
+                    },
+                ],
+            })
+
+            weather.now('chelsea,ma', units='metric')
+
+            mock_urlopen.assert_called_with('http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=metric')
+
     def test_it_raises_an_error_when_given_a_bad_response(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
             mock_urlopen.return_value.read.return_value = '{'

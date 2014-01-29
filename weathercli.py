@@ -15,8 +15,11 @@ class WeatherDataError(Exception):
 
 
 class Weather(object):
-    def now(self, query):
-        raw_data = urllib.urlopen('http://api.openweathermap.org/data/2.5/weather?q={0}&units=imperial'.format(urllib.quote_plus(query))).read()
+    def now(self, query, units='imperial'):
+        raw_data = urllib.urlopen('http://api.openweathermap.org/data/2.5/weather?q={0}&units={1}'.format(
+            urllib.quote_plus(query),
+            units
+        )).read()
         
         try:
             weather = json.loads(raw_data)
@@ -50,8 +53,13 @@ def get_temp_color(conditions):
     
 
 def main():
+    units = {
+        'celcius': 'metric',
+        'fahrenheit': 'imperial',
+    }
     parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")
-    parser.add_argument('query', metavar='query', nargs="?", help="A location query string to find weather for")
+    parser.add_argument('query', nargs="?", help="A location query string to find weather for")
+    parser.add_argument('-u', '--units', dest='units', choices=units.keys(), default='fahrenheit', help="Units of measurement (default: fahrenheit)")
 
     args = parser.parse_args()
     weather = Weather()
@@ -62,7 +70,7 @@ def main():
         sys.exit(1)
     
     try:
-        conditions = weather.now(query)
+        conditions = weather.now(query, units[args.units])
     except WeatherDataError as e:
         print >> sys.stderr, "ERROR: {0}".format(e.message)
         sys.exit(1)
