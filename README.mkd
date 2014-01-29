@@ -21,6 +21,15 @@ The query you pass in will override the environment variable, though, so you can
     $ export WEATHER=portland,me && weather "los angeles,ca"
     It's 76° and sunny
 
+Live in one of those metric countries, you say? No problem!
+
+    $ weather "tokyo,jp" --units celcius
+    It's 8° and sky is clear
+
+Read more at:
+
+    $ weather -h
+
 Install
 -------
 
