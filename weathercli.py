@@ -35,6 +35,30 @@ class Weather(object):
         return u"It's {0}\u00B0 and {1}".format(temperature, condition.lower())
 
 
+class Arguments(object):
+    QUERY = 'WEATHER'
+
+    def __init__(self):
+        self.units = {
+            'celsius': 'metric',
+            'fahrenheit': 'imperial',
+        }
+
+        self.parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")
+        self.parser.add_argument('query', nargs="?", help="A location query string to find weather for")
+        self.parser.add_argument('-u', '--units', dest='units', choices=self.units.keys(), help="Units of measurement (default: fahrenheit)")
+
+    def parse(self, args):
+        args = self.parser.parse_args(args)
+        return {
+            'query': args.query or os.environ.get(Arguments.QUERY),
+            'units': args.units and self.units[args.units] or self.units['fahrenheit'],
+        }
+
+    def help(self):
+        return self.parser.format_help()
+
+
 def get_temp_color(conditions):
     temp_color_map = [
         (40, 'cyan'),
@@ -53,24 +77,17 @@ def get_temp_color(conditions):
     
 
 def main():
-    units = {
-        'celsius': 'metric',
-        'fahrenheit': 'imperial',
-    }
-    parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")
-    parser.add_argument('query', nargs="?", help="A location query string to find weather for")
-    parser.add_argument('-u', '--units', dest='units', choices=units.keys(), default='fahrenheit', help="Units of measurement (default: fahrenheit)")
+    arguments = Arguments()
 
-    args = parser.parse_args()
+    args = arguments.parse(sys.argv[1:])
     weather = Weather()
 
-    query = args.query or os.environ.get('WEATHER')
-    if not query:
-        parser.print_help()
+    if not args['query']:
+        print arguments.help()
         sys.exit(1)
     
     try:
-        conditions = weather.now(query, units[args.units])
+        conditions = weather.now(args['query'], args['units'])
     except WeatherDataError as e:
         print >> sys.stderr, "ERROR: {0}".format(e.message)
         sys.exit(1)
