@@ -8,7 +8,7 @@ import pytest
 
 import weathercli
 
-weather = weathercli.Weather()
+weather = weathercli.OpenWeatherMap()
 
 
 class DescribeWeather:

@@ -14,7 +14,7 @@ class WeatherDataError(Exception):
     pass
 
 
-class Weather(object):
+class OpenWeatherMap(object):
     def now(self, query, units='imperial'):
         raw_data = urllib.urlopen('http://api.openweathermap.org/data/2.5/weather?q={0}&units={1}'.format(
             urllib.quote_plus(query),
@@ -76,24 +76,27 @@ def get_temp_color(conditions):
     return 'white'
     
 
-def main():
-    arguments = Arguments()
+class Weather(object):
 
-    args = arguments.parse(sys.argv[1:])
-    weather = Weather()
+    @classmethod
+    def main(self):
+        arguments = Arguments()
 
-    if not args['query']:
-        print arguments.help()
-        sys.exit(1)
-    
-    try:
-        conditions = weather.now(args['query'], args['units'])
-    except WeatherDataError as e:
-        print >> sys.stderr, "ERROR: {0}".format(e.message)
-        sys.exit(1)
+        args = arguments.parse(sys.argv[1:])
+        weather = OpenWeatherMap()
 
-    puts(getattr(colored, get_temp_color(conditions))(conditions))
+        if not args['query']:
+            print arguments.help()
+            sys.exit(1)
+
+        try:
+            conditions = weather.now(args['query'], args['units'])
+        except WeatherDataError as e:
+            print >> sys.stderr, "ERROR: {0}".format(e.message)
+            sys.exit(1)
+
+        puts(getattr(colored, get_temp_color(conditions))(conditions))
 
 
 if __name__ == '__main__':
-    main()
+    Weather.main()
