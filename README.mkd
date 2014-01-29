@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/brianriley/weather-cli.png?branch=master)](https://travis-ci.org/brianriley/weather-cli)
+
 You've spent hours, days, months, maybe **years** customizing your terminal. And yet so many things draw your attention away from it.
 
 GONE are the days of wasting non-terminal moments looking up the current weather! Now, ask your terminal:
