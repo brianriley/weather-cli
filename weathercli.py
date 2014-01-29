@@ -54,7 +54,7 @@ def get_temp_color(conditions):
 
 def main():
     units = {
-        'celcius': 'metric',
+        'celsius': 'metric',
         'fahrenheit': 'imperial',
     }
     parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")

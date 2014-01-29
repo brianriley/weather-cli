@@ -23,7 +23,7 @@ The query you pass in will override the environment variable, though, so you can
 
 Live in one of those metric countries, you say? No problem!
 
-    $ weather "tokyo,jp" --units celcius
+    $ weather "tokyo,jp" --units celsius
     It's 8° and sky is clear
 
 Read more at:
