@@ -78,7 +78,7 @@ def get_temp_color(conditions):
 class Weather(object):
 
     @classmethod
-    def main(self):
+    def main(cls):
         arguments = Arguments()
 
         args = arguments.parse(sys.argv[1:], defaults=os.environ)
