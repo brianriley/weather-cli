@@ -28,6 +28,11 @@ Live in one of those metric countries, you say? No problem!
     $ weather "tokyo,jp" --units celsius
     It's 8° and sky is clear
 
+And units can be saved as an environment variable `WEATHER_UNITS` as well:
+
+    $ export WEATHER_UNITS=celsius && weather
+    It's -8° and sky is clear
+
 Read more at:
 
     $ weather -h

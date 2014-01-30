@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import argparse
+from collections import defaultdict
 import json
 import os
 import re
@@ -37,22 +38,20 @@ class OpenWeatherMap(object):
 
 class Arguments(object):
     QUERY = 'WEATHER'
+    UNITS = 'WEATHER_UNITS'
 
     def __init__(self):
-        self.units = {
-            'celsius': 'metric',
-            'fahrenheit': 'imperial',
-        }
+        self.units = defaultdict(lambda: 'imperial', {'celsius': 'metric'})
 
         self.parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")
         self.parser.add_argument('query', nargs="?", help="A location query string to find weather for")
         self.parser.add_argument('-u', '--units', dest='units', choices=self.units.keys(), help="Units of measurement (default: fahrenheit)")
 
-    def parse(self, args):
+    def parse(self, args, defaults={}):
         args = self.parser.parse_args(args)
         return {
-            'query': args.query or os.environ.get(Arguments.QUERY),
-            'units': args.units and self.units[args.units] or self.units['fahrenheit'],
+            'query': args.query or defaults.get(Arguments.QUERY),
+            'units': self.units[args.units or defaults.get(Arguments.UNITS)],
         }
 
     def help(self):
@@ -82,15 +81,15 @@ class Weather(object):
     def main(self):
         arguments = Arguments()
 
-        args = arguments.parse(sys.argv[1:])
-        weather = OpenWeatherMap()
+        args = arguments.parse(sys.argv[1:], defaults=os.environ)
+        weather_provider = OpenWeatherMap()
 
         if not args['query']:
             print arguments.help()
             sys.exit(1)
 
         try:
-            conditions = weather.now(args['query'], args['units'])
+            conditions = weather_provider.now(args['query'], args['units'])
         except WeatherDataError as e:
             print >> sys.stderr, "ERROR: {0}".format(e.message)
             sys.exit(1)

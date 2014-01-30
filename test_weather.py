@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json
-import os
 
 import mock
 import pytest
@@ -98,17 +97,6 @@ class DescribeGetTempColor:
 
 class DescribeArguments:
 
-    def setup_method(self, method):
-        self.old_query = os.environ.get(weathercli.Arguments.QUERY)
-        try:
-            del os.environ[weathercli.Arguments.QUERY]
-        except KeyError:
-            pass
-
-    def teardown_method(self, method):
-        if self.old_query:
-            os.environ[weathercli.Arguments.QUERY] = self.old_query
-
     def it_returns_None_if_no_query_given(self):
         args = weathercli.Arguments().parse([])
 
@@ -119,10 +107,8 @@ class DescribeArguments:
 
         assert args['query'] == 'foo'
 
-    def it_returns_the_env_var_if_no_query_passed_in(self):
-        os.environ[weathercli.Arguments.QUERY] = 'foo'
-
-        args = weathercli.Arguments().parse([])
+    def it_gets_query_from_the_defaults(self):
+        args = weathercli.Arguments().parse([], defaults={weathercli.Arguments.QUERY: 'foo'})
 
         assert args['query'] == 'foo'
 
@@ -135,6 +121,16 @@ class DescribeArguments:
         args = weathercli.Arguments().parse(['-u', 'celsius'])
 
         assert args['units'] == 'metric'
+
+    def it_gets_units_from_the_defaults(self):
+        args = weathercli.Arguments().parse([], defaults={weathercli.Arguments.UNITS: 'celsius'})
+
+        assert args['units'] == 'metric'
+
+    def it_defaults_unknown_units_to_imperial(self):
+        args = weathercli.Arguments().parse([], defaults={weathercli.Arguments.UNITS: 'foo'})
+
+        assert args['units'] == 'imperial'
 
     def it_can_output_its_help(self):
         args = weathercli.Arguments()
