@@ -10,12 +10,24 @@ import urllib
 
 from clint.textui import puts, colored
 
+class VerboseFormatter(object):
+
+    def output(self, context):
+        return u"It's {0}\u00B0 and {1}".format(
+            context['temp'],
+            context['conditions'].lower()
+        )
+
 
 class WeatherDataError(Exception):
     pass
 
 
 class OpenWeatherMap(object):
+
+    def __init__(self, formatter=VerboseFormatter()):
+        self.formatter = formatter
+
     def now(self, query, units='imperial'):
         raw_data = urllib.urlopen('http://api.openweathermap.org/data/2.5/weather?q={0}&units={1}'.format(
             urllib.quote_plus(query),
@@ -27,13 +39,14 @@ class OpenWeatherMap(object):
         except ValueError:
             raise WeatherDataError("Malformed response from weather service")
 
+        context = {}
         try:
-            temperature = int(weather['main']['temp'])
-            condition = weather['weather'][0]['description']
+            context['temp'] = int(weather['main']['temp'])
+            context['conditions'] = weather['weather'][0]['description']
         except KeyError:
             raise WeatherDataError("No conditions reported for your search")
 
-        return u"It's {0}\u00B0 and {1}".format(temperature, condition.lower())
+        return self.formatter.output(context)
 
 
 class Arguments(object):
@@ -46,12 +59,14 @@ class Arguments(object):
         self.parser = argparse.ArgumentParser(description="Outputs the weather for a given location query string")
         self.parser.add_argument('query', nargs="?", help="A location query string to find weather for")
         self.parser.add_argument('-u', '--units', dest='units', choices=self.units.keys(), help="Units of measurement (default: fahrenheit)")
+        self.parser.add_argument('--iconify', action='store_true', help="Show weather in icons?")
 
     def parse(self, args, defaults={}):
         args = self.parser.parse_args(args)
         return {
             'query': args.query or defaults.get(Arguments.QUERY),
             'units': self.units[args.units or defaults.get(Arguments.UNITS)],
+            'iconify': args.iconify,
         }
 
     def help(self):

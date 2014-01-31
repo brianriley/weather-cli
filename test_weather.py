@@ -136,3 +136,21 @@ class DescribeArguments:
         args = weathercli.Arguments()
 
         assert args.help().startswith('usage')
+
+    def it_defaults_iconify_to_false(self):
+        args = weathercli.Arguments().parse([])
+
+        assert args['iconify'] == False
+
+    def it_sets_iconify_to_true_when_passed_as_an_arg(self):
+        args = weathercli.Arguments().parse(['--iconify'])
+
+        assert args['iconify'] == True
+
+
+class DescribeVerboseFormatter:
+
+    def it_returns_the_weather_written_out(self):
+        vf = weathercli.VerboseFormatter()
+
+        assert vf.output({'temp': 10, 'conditions': 'cloudy'}) == u"It's 10\u00B0 and cloudy"
