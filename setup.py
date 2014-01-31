@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name='weathercli',
-    version='2.3.0',
+    version='2.3.1',
     author='Brian Riley',
     author_email='brian@btriley.com',
     description="A command line weather tool",
