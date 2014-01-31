@@ -7,10 +7,11 @@ import pytest
 
 import weathercli
 
-weather = weathercli.OpenWeatherMap()
 
+class DescribeOpenWeatherMap:
 
-class DescribeWeather:
+    def setup(self):
+        self.weather = weathercli.OpenWeatherMap()
 
     def it_passes_query_to_url(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
@@ -20,12 +21,13 @@ class DescribeWeather:
                 },
                 'weather': [
                     {
-                        'description': 'abc'
+                        'description': 'abc',
+                        'icon': '123',
                     },
                 ],
             })
 
-            weather.now('chelsea,ma')
+            self.weather.now('chelsea,ma')
 
             mock_urlopen.assert_called_with('http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=imperial')
 
@@ -37,12 +39,13 @@ class DescribeWeather:
                 },
                 'weather': [
                     {
-                        'description': 'abc'
+                        'description': 'abc',
+                        'icon': '123',
                     },
                 ],
             })
 
-            weather.now('chelsea,ma', units='metric')
+            self.weather.now('chelsea,ma', units='metric')
 
             mock_urlopen.assert_called_with('http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=metric')
 
@@ -51,7 +54,7 @@ class DescribeWeather:
             mock_urlopen.return_value.read.return_value = '{'
 
             with pytest.raises(weathercli.WeatherDataError) as cm:
-                weather.now('chelsea,ma')
+                self.weather.now('chelsea,ma')
 
             assert cm.value.message == "Malformed response from weather service"
 
@@ -60,11 +63,11 @@ class DescribeWeather:
             mock_urlopen.return_value.read.return_value = '{}'
 
             with pytest.raises(weathercli.WeatherDataError) as cm:
-                weather.now('chelsea,ma')
+                self.weather.now('chelsea,ma')
 
             assert cm.value.message == "No conditions reported for your search"
 
-    def it_returns_the_weather_conditions(self):
+    def it_calls_the_formatter_with_correct_parameters(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
             mock_urlopen.return_value.read.return_value = json.dumps({
                 'main': {
@@ -72,12 +75,52 @@ class DescribeWeather:
                 },
                 'weather': [
                     {
-                        'description': 'sky is clear'
+                        'description': 'sky is clear',
+                        'icon': '01d',
                     },
                 ],
             })
+            formatter = mock.Mock()
+            weather = weathercli.OpenWeatherMap(formatter=formatter)
 
-            assert weather.now('chelsea,ma') == u"It's 35\u00B0 and sky is clear"
+            weather.now('chelsea,ma')
+
+            formatter.output.assert_called_with({'temp': 35, 'conditions': 'sky is clear', 'icon': u'\u2600'})
+
+    def it_converts_sunny_icon_code_to_our_code(self):
+        assert self.weather.icon('01d') == weathercli.SUN
+        assert self.weather.icon('01n') == weathercli.SUN
+
+    def it_converts_few_clouds_icon_code_to_our_code(self):
+        assert self.weather.icon('02d') == weathercli.CLOUDS
+        assert self.weather.icon('02n') == weathercli.CLOUDS
+
+    def it_converts_scattered_clouds_icon_code_to_our_code(self):
+        assert self.weather.icon('03d') == weathercli.CLOUDS
+        assert self.weather.icon('03n') == weathercli.CLOUDS
+
+    def it_converts_broken_clouds_icon_code_to_our_code(self):
+        assert self.weather.icon('04d') == weathercli.CLOUDS
+        assert self.weather.icon('04n') == weathercli.CLOUDS
+
+    def it_converts_shower_rain_icon_code_to_our_code(self):
+        assert self.weather.icon('09d') == weathercli.RAIN
+        assert self.weather.icon('09n') == weathercli.RAIN
+
+    def it_converts_rain_icon_code_to_our_code(self):
+        assert self.weather.icon('10d') == weathercli.RAIN
+        assert self.weather.icon('10n') == weathercli.RAIN
+
+    def it_converts_thunderstorm_icon_code_to_our_code(self):
+        assert self.weather.icon('11d') == weathercli.RAIN
+        assert self.weather.icon('11n') == weathercli.RAIN
+
+    def it_converts_snow_icon_code_to_our_code(self):
+        assert self.weather.icon('13d') == weathercli.SNOW
+        assert self.weather.icon('13n') == weathercli.SNOW
+
+    def it_converts_all_other_icon_codes_to_0(self):
+        assert self.weather.icon('aslfj') == 0
 
 
 class DescribeGetTempColor:
@@ -151,6 +194,15 @@ class DescribeArguments:
 class DescribeVerboseFormatter:
 
     def it_returns_the_weather_written_out(self):
-        vf = weathercli.VerboseFormatter()
+        formatter = weathercli.VerboseFormatter()
 
-        assert vf.output({'temp': 10, 'conditions': 'cloudy'}) == u"It's 10\u00B0 and cloudy"
+        assert formatter.output({'temp': 10, 'conditions': 'cloudy'}) == u"It's 10\u00B0 and cloudy"
+
+
+class DescribeIconifyFormatter:
+
+    def setup(self):
+        self.formatter = weathercli.IconifyFormatter()
+
+    def it_returns_the_weather_in_icon_format(self):
+        assert self.formatter.output({'temp': 10, 'icon': u'\u2600'}) == u"10\u00B0\u2600"

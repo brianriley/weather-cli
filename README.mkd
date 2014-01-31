@@ -33,6 +33,11 @@ And units can be saved as an environment variable `WEATHER_UNITS` as well:
     $ export WEATHER_UNITS=celsius && weather
     It's -8° and sky is clear
 
+Or maybe you prefer pretty pictures. Get it, with `weather`!
+
+    $ weather tokyo,jp --iconify
+    55°☀
+
 Read more at:
 
     $ weather -h

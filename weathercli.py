@@ -10,12 +10,28 @@ import urllib
 
 from clint.textui import puts, colored
 
+
+SUN = u'\u2600'
+CLOUDS = u'\u2601'
+RAIN = u'\u2602'
+SNOW = u'\u2603'
+
+
 class VerboseFormatter(object):
 
     def output(self, context):
         return u"It's {0}\u00B0 and {1}".format(
             context['temp'],
             context['conditions'].lower()
+        )
+
+
+class IconifyFormatter(object):
+
+    def output(self, context):
+        return u"{0}\u00B0{1}".format(
+            context['temp'],
+            context['icon']
         )
 
 
@@ -43,10 +59,32 @@ class OpenWeatherMap(object):
         try:
             context['temp'] = int(weather['main']['temp'])
             context['conditions'] = weather['weather'][0]['description']
+            context['icon'] = self.icon(weather['weather'][0]['icon'])
         except KeyError:
             raise WeatherDataError("No conditions reported for your search")
 
         return self.formatter.output(context)
+
+    def icon(self, code):
+        codes = defaultdict(int, {
+            '01d': SUN,
+            '01n': SUN,
+            '02d': CLOUDS,
+            '02n': CLOUDS,
+            '03d': CLOUDS,
+            '03n': CLOUDS,
+            '04d': CLOUDS,
+            '04n': CLOUDS,
+            '09d': RAIN,
+            '09n': RAIN,
+            '10d': RAIN,
+            '10n': RAIN,
+            '11d': RAIN,
+            '11n': RAIN,
+            '13d': SNOW,
+            '13n': SNOW,
+        })
+        return codes[code]
 
 
 class Arguments(object):
@@ -97,7 +135,8 @@ class Weather(object):
         arguments = Arguments()
 
         args = arguments.parse(sys.argv[1:], defaults=os.environ)
-        weather_provider = OpenWeatherMap()
+        formatter = args['iconify'] and IconifyFormatter() or VerboseFormatter()
+        weather_provider = OpenWeatherMap(formatter=formatter)
 
         if not args['query']:
             print arguments.help()
