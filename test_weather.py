@@ -9,7 +9,6 @@ import weathercli
 
 
 class DescribeOpenWeatherMap:
-
     def setup(self):
         self.weather = weathercli.OpenWeatherMap()
 
@@ -29,7 +28,8 @@ class DescribeOpenWeatherMap:
 
             self.weather.now('chelsea,ma')
 
-            mock_urlopen.assert_called_with('http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=imperial')
+            mock_urlopen.assert_called_with(
+                'http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=imperial')
 
     def it_passes_units_along_to_query(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
@@ -47,7 +47,8 @@ class DescribeOpenWeatherMap:
 
             self.weather.now('chelsea,ma', units='metric')
 
-            mock_urlopen.assert_called_with('http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=metric')
+            mock_urlopen.assert_called_with(
+                'http://api.openweathermap.org/data/2.5/weather?q=chelsea%2Cma&units=metric')
 
     def it_raises_an_error_when_given_a_bad_response(self):
         with mock.patch('weathercli.urllib.urlopen') as mock_urlopen:
@@ -124,7 +125,6 @@ class DescribeOpenWeatherMap:
 
 
 class DescribeGetTempColor:
-    
     def it_is_blue_when_cold(self):
         assert weathercli.get_temp_color("It's 45 degrees and snowing") == 'blue'
 
@@ -139,7 +139,6 @@ class DescribeGetTempColor:
 
 
 class DescribeArguments:
-
     def it_returns_None_if_no_query_given(self):
         args = weathercli.Arguments().parse([])
 
@@ -192,7 +191,6 @@ class DescribeArguments:
 
 
 class DescribeVerboseFormatter:
-
     def it_returns_the_weather_written_out(self):
         formatter = weathercli.VerboseFormatter()
 
@@ -200,7 +198,6 @@ class DescribeVerboseFormatter:
 
 
 class DescribeIconifyFormatter:
-
     def setup(self):
         self.formatter = weathercli.IconifyFormatter()
 
